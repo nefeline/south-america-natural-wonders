@@ -1,4 +1,4 @@
-(function(){
+var initMap= function(){
 
 // Database
 var Database = [
@@ -99,7 +99,7 @@ var AppModel = function() {
         	center: {lat: -25.613348, lng: -54.479599},
             zoom: 3,
 			mapTypeControl: false,
-			streetViewControl: false
+			//streetViewControl: false
         });
 
   	// Initialize markers
@@ -113,7 +113,7 @@ var AppModel = function() {
 	// Render all markers with data from the data model.
 	this.renderMarkers(self.placeList());
 
-	// Subscribe to changed in search field. If have change, render again with the filered locations.
+	// Subscribe to changed in search field. Show/hide markers without removing/redraw them.
   	this.filteredItems.subscribe(function(){
 		self.renderMarkers(self.filteredItems());
   	});
@@ -127,13 +127,16 @@ var AppModel = function() {
 		// Every click close all indowindows.
 	    self.infowindow.close();
 	});
+
+
 };
 
 
 // Clear all markers
 AppModel.prototype.clearMarkers = function() {
 	for (var i = 0; i < this.markers.length; i++) {
-		this.markers[i].setMap(null);
+		//(Replaced setMap with setVisible as requested.)
+		this.markers[i].setVisible(false);
 	}
 		this.markers = [];
 };
@@ -158,11 +161,13 @@ AppModel.prototype.renderMarkers = function(arrayInput) {
 		});
 
 		this.markers.push(marker);
-		//render in the map
-		this.markers[i].setMap(this.map);
+		//render in the map (Replaced setMap with setVisible as requested.)
+		this.markers[i].setVisible(true);
 		// add event listener for click event to the newly created marker
 		marker.addListener('click', this.activateMarker(marker, context, infowindow, i));
   	}
+
+
 };
 
 // Set all marker icons to default.
@@ -183,22 +188,16 @@ AppModel.prototype.instagram = function(place) {
 		url: 'https://api.instagram.com/v1/tags/' + place.imgSrc + '/media/recent',
 		dataType: 'jsonp',
 		type: 'GET',
-		data: {access_token: token, count: num_photos},
-		success: function(data){
-		// In case of success, do not display error message
-			clearTimeout(instagramRequestTimeout);
+		data: {access_token: token, count: num_photos}
+		}).done(function (data){
 			console.log(data);
-			for(x in data.data){
-				$('.instagram').append('<a href="https://www.instagram.com/patriciahill" target="_blank"><img src="'+data.data[x].images.standard_resolution.url+'"></a>');
-			}
-		}
-	});
-
-	//Handling Error
-	var instagramRequestTimeout = setTimeout(function(){
-	    $('.instagram').addClass('fail').text("Unable to connect to Instagram");
-	}, 3000);
-
+			//Replaced for in loop with forEach loop.
+			data.data.forEach(function(x){
+				$('.instagram').append('<a href="https://www.instagram.com/patriciahill" target="_blank"><img src="'+x.images.standard_resolution.url+'"></a>');
+			});
+		}).fail(function (jqXHR, textStatus) {
+			$('.instagram').addClass('fail').text("Unable to connect to Instagram");
+		});
 };
 
 // Set the target marker to change icon and open infowindow
@@ -237,4 +236,8 @@ AppModel.prototype.updateContent = function(place){
 
 ko.applyBindings(new AppModel());
 
-})();
+}
+
+var googleError = function(){
+	window.alert("Unable to load the Map, please try again later.");
+}
