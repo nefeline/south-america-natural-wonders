@@ -1,8 +1,6 @@
 # South America Natural Wonders
 
-This is an interactive map containing all South America Natural Wonders I have visited during the last few years.
-
-This App was built using JavaScript, jQuery, knockoutJS, Google Maps API, and Instagram API.
+This App is an interactive map containing all South America Natural Wonders I have visited during the last few years. It was built using JavaScript, jQuery, knockoutJS, Google Maps API, and Instagram API.
 
 This Project was built for Udacity's Front-End Web Development Nanodegree. 
 
@@ -18,7 +16,7 @@ https://nefeline.github.io/south-america-natural-wonders/
 
 ## Using the App
 
-Users can filter the list of Natural Wonders based on either name or country name. When searching, both the Natural Worders list and the markers will be filtered according to the search criteria.
+Users can filter the list of Natural Wonders based on their names or country names. When searching, both the Natural Worders list and the markers will be filtered according to the search criteria.
 
 ## Dependencies
 
