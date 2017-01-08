@@ -46,16 +46,6 @@ var Database = [
 	}
 ];
 
-// Initialize Google Maps
-function initMap() {
-	map = new google.maps.Map(document.getElementById('map'), {
-    	center: {lat: -25.613348, lng: -54.479599},
-        zoom: 3,
-		mapTypeControl: false,
-		streetViewControl: false
-    });
-}
-
 var Place = function(data) {
 	this.name = data.name;
 	this.lat = data.lat;
