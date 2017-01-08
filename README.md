@@ -20,4 +20,4 @@ Users can filter the list of Natural Wonders based on their names or country nam
 
 ## Dependencies
 
-This App requires a Google Maps API key and an Instagram API access token to work properly.
+This App requires a Google Maps API key and an Instagram API access token to work properly.	

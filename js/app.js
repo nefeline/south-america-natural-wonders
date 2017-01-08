@@ -185,16 +185,15 @@ AppModel.prototype.instagram = function(place) {
 		type: 'GET',
 		data: {access_token: token, count: num_photos},
 		success: function(data){
-			// Do not display error message
-		clearTimeout(instagramRequestTimeout);
+		// In case of success, do not display error message
+			clearTimeout(instagramRequestTimeout);
 			console.log(data);
 			for(x in data.data){
 				$('.instagram').append('<a href="https://www.instagram.com/patriciahill" target="_blank"><img src="'+data.data[x].images.standard_resolution.url+'"></a>');
 			}
 		}
-
-
 	});
+
 	//Handling Error
 	var instagramRequestTimeout = setTimeout(function(){
 	    $('.instagram').addClass('fail').text("Unable to connect to Instagram");
