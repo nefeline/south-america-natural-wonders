@@ -2,7 +2,9 @@
 
 This is an interactive map containing all South America Natural Wonders I have visited during the last few years.
 
-This App was built using JavaScript, jQuery, knockoutJS, Google Maps API, and Instagram API. 
+This App was built using JavaScript, jQuery, knockoutJS, Google Maps API, and Instagram API.
+
+This Project was built for Udacity's Front-End Web Development Nanodegree. 
 
 ## Demo
 
