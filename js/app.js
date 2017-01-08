@@ -184,6 +184,7 @@ AppModel.prototype.instagram = function(place) {
     num_photos = 1;
 	$('.instagram').empty();
 
+
 	$.ajax({
 		url: 'https://api.instagram.com/v1/tags/' + place.imgSrc + '/media/recent',
 		dataType: 'jsonp',
@@ -191,13 +192,16 @@ AppModel.prototype.instagram = function(place) {
 		data: {access_token: token, count: num_photos}
 		}).done(function (data){
 			console.log(data);
+				// Initialize infowindow
+
 			//Replaced for in loop with forEach loop.
 			data.data.forEach(function(x){
-				$('.instagram').append('<a href="https://www.instagram.com/patriciahill" target="_blank"><img src="'+x.images.standard_resolution.url+'"></a>');
+				$('.instagram').append('<img src="'+x.images.standard_resolution.url+'">');
 			});
 		}).fail(function (jqXHR, textStatus) {
 			$('.instagram').addClass('fail').text("Unable to connect to Instagram");
 		});
+
 };
 
 // Set the target marker to change icon and open infowindow
