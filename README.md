@@ -6,7 +6,7 @@ This App was built using JavaScript, jQuery, knockoutJS, Google Maps API, and In
 
 ## Demo
 
-
+https://nefeline.github.io/south-america-natural-wonders/
 
 ## How to install
 
