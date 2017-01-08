@@ -192,8 +192,6 @@ AppModel.prototype.instagram = function(place) {
 		data: {access_token: token, count: num_photos}
 		}).done(function (data){
 			console.log(data);
-				// Initialize infowindow
-
 			//Replaced for in loop with forEach loop.
 			data.data.forEach(function(x){
 				$('.instagram').append('<img src="'+x.images.standard_resolution.url+'">');
