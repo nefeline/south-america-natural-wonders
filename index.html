@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>South America Natural Wonders</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">         
+    </head>
+    
+    <body>
+        <div class="container-fluid">
+        <div class="row">
+            <section class="section-nav col-md-3">
+                <div class="row site-header">
+                <div class="col-sm-12">
+                    <header class="">
+                    <h1>South America Natural Wonders</h1>
+                    <form>
+                        <input type="text" id="searchbar" name="searchbar" class="form-control" data-bind="value: search, valueUpdate: 'afterkeydown'" placeholder="Search">
+                    </form>
+                    </header>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                    <ul data-bind="foreach: filteredItems" class="main-nav">
+                    <li data-bind="text: $data.name, click: $parent.setPlace" class="main-nav-item col-md-12 col-sm-6">Link</li>
+                    </ul>
+                    </div>
+                </div>
+            </section>
+            <section class="col-md-9 section-content">
+                <div class="row">
+                    <div class="col-sm-12" id="map">If you can read this, there has been an error loading Google Maps. Please Try Again.</div>
+                </div>
+            </section>
+        </div>
+        </div>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBronq51iWrZYmz-HXtzIWRAwHxDeP2mN0"></script>
+        <script src="js/knockout-3.4.0.js"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>
+
