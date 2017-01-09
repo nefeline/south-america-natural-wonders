@@ -233,7 +233,7 @@ AppModel.prototype.activateMarker = function(marker, context, infowindow, index)
 AppModel.prototype.updateContent = function(place){
 	var html = '<div class="info-content">' +
 		'<h3>' + place.name + '</h3>' +
-		'<div class="instagram"><img src="'+ this.photoURL +'"></div>' +
+		'<div class="instagram"><img src="'+ photoURL +'"></div>' +
 		'<div class="by"><a href="https://www.instagram.com/patriciahill" target="_blank">Instagram - By Patricia Hillebrandt</a></div>' +
 		'<p>' + place.description + '</p>' + '</div>';
 
