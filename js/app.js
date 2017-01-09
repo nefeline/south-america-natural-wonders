@@ -180,11 +180,10 @@ AppModel.prototype.deactivateAllMarkers = function() {
 
 // Connects to Instagram API
 AppModel.prototype.instagram = function(place) {
+	var self = this;
 	var token = '220594605.dc5be36.46fb27425a8c4345999674601f2315dc',
     num_photos = 1;
-	$('.instagram').empty();
-
-
+	// $('.instagram').empty();
 	$.ajax({
 		url: 'https://api.instagram.com/v1/tags/' + place.imgSrc + '/media/recent',
 		dataType: 'jsonp',
@@ -194,7 +193,10 @@ AppModel.prototype.instagram = function(place) {
 			console.log(data);
 			//Replaced for in loop with forEach loop.
 			data.data.forEach(function(x){
-				$('.instagram').append('<img src="'+x.images.standard_resolution.url+'">');
+				var photoURL = x.images.standard_resolution.url;
+      			self.updateContent(place, photoURL);
+    			//The following works perfectly:
+				//$('.instagram').append('<img src="'+x.images.standard_resolution.url+'">');
 			});
 		}).fail(function (jqXHR, textStatus) {
 			$('.instagram').addClass('fail').text("Unable to connect to Instagram");
@@ -225,11 +227,13 @@ AppModel.prototype.activateMarker = function(marker, context, infowindow, index)
 	};
 };
 
+
+
 // Change the content of infowindow
 AppModel.prototype.updateContent = function(place){
 	var html = '<div class="info-content">' +
 		'<h3>' + place.name + '</h3>' +
-		'<div class="instagram"></div>' +
+		'<div class="instagram"><img src="'+ this.photoURL +'"></div>' +
 		'<div class="by"><a href="https://www.instagram.com/patriciahill" target="_blank">Instagram - By Patricia Hillebrandt</a></div>' +
 		'<p>' + place.description + '</p>' + '</div>';
 
