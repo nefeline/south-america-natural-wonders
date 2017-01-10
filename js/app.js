@@ -99,7 +99,7 @@ var AppModel = function() {
         	center: {lat: -25.613348, lng: -54.479599},
             zoom: 3,
 			mapTypeControl: false,
-			//streetViewControl: false
+			streetViewControl: false
         });
 
   	// Initialize markers
@@ -127,23 +127,10 @@ var AppModel = function() {
 		// Every click close all indowindows.
 	    self.infowindow.close();
 	});
-
-
-};
-
-
-// Clear all markers
-AppModel.prototype.clearMarkers = function() {
-	for (var i = 0; i < this.markers.length; i++) {
-		//(Replaced setMap with setVisible as requested.)
-		this.markers[i].setVisible(false);
-	}
-		this.markers = [];
 };
 
 // Render all markers
 AppModel.prototype.renderMarkers = function(arrayInput) {
-
 	// Clear old markers before render
 	this.clearMarkers();
 	var infowindow = this.infowindow;
@@ -161,47 +148,21 @@ AppModel.prototype.renderMarkers = function(arrayInput) {
 		});
 
 		this.markers.push(marker);
-		//render in the map (Replaced setMap with setVisible as requested.)
-		this.markers[i].setVisible(true);
+
+		this.markers[i].setMap(this.map);
+
 		// add event listener for click event to the newly created marker
 		marker.addListener('click', this.activateMarker(marker, context, infowindow, i));
-  	}
 
-
-};
-
-// Set all marker icons to default.
-AppModel.prototype.deactivateAllMarkers = function() {
-	var markers = this.markers;
-	for (var i = 0; i < markers.length; i ++) {
-		markers[i].setIcon('img/map-pin.png');
 	}
 };
 
-// Connects to Instagram API
-AppModel.prototype.instagram = function(place) {
-	var self = this;
-	var token = '220594605.dc5be36.46fb27425a8c4345999674601f2315dc',
-    num_photos = 1;
-	// $('.instagram').empty();
-	$.ajax({
-		url: 'https://api.instagram.com/v1/tags/' + place.imgSrc + '/media/recent',
-		dataType: 'jsonp',
-		type: 'GET',
-		data: {access_token: token, count: num_photos}
-		}).done(function (data){
-			console.log(data);
-			//Replaced for in loop with forEach loop.
-			data.data.forEach(function(x){
-				var photoURL = x.images.standard_resolution.url;
-      			self.updateContent(place, photoURL);
-    			//The following works perfectly:
-				//$('.instagram').append('<img src="'+x.images.standard_resolution.url+'">');
-			});
-		}).fail(function (jqXHR, textStatus) {
-			$('.instagram').addClass('fail').text("Unable to connect to Instagram");
-		});
-
+// Clear all markers
+AppModel.prototype.clearMarkers = function() {
+	for (var i = 0; i < this.markers.length; i++) {
+		this.markers[i].setMap(null);
+	}
+		this.markers = [];
 };
 
 // Set the target marker to change icon and open infowindow
@@ -227,13 +188,40 @@ AppModel.prototype.activateMarker = function(marker, context, infowindow, index)
 	};
 };
 
+// Set all marker icons to default.
+AppModel.prototype.deactivateAllMarkers = function() {
+	var markers = this.markers;
+	for (var i = 0; i < markers.length; i ++) {
+		markers[i].setIcon('img/map-pin.png');
+	}
+};
 
+// Connects to Instagram API
+AppModel.prototype.instagram = function(place) {
+	var self = this;
+	var token = '220594605.dc5be36.46fb27425a8c4345999674601f2315dc',
+    num_photos = 1;
+	$.ajax({
+		url: 'https://api.instagram.com/v1/tags/' + place.imgSrc + '/media/recent',
+		dataType: 'jsonp',
+		type: 'GET',
+		data: {access_token: token, count: num_photos}
+		}).done(function (data){
+			//Replaced for in loop with forEach loop.
+			data.data.forEach(function(x){
+				var photoURL = '<img src="'+x.images.standard_resolution.url+'">';
+      			self.updateContent(place, photoURL);
+			});
+		}).fail(function (jqXHR, textStatus) {
+			window.alert("Unable to load the Instagram photos, please try again later.");
+		});
+};
 
 // Change the content of infowindow
-AppModel.prototype.updateContent = function(place){
+AppModel.prototype.updateContent = function(place, photoURL){
 	var html = '<div class="info-content">' +
 		'<h3>' + place.name + '</h3>' +
-		'<div class="instagram"><img src="'+ photoURL +'"></div>' +
+		'<div class="instagram">'+ photoURL +'</div>' +
 		'<div class="by"><a href="https://www.instagram.com/patriciahill" target="_blank">Instagram - By Patricia Hillebrandt</a></div>' +
 		'<p>' + place.description + '</p>' + '</div>';
 
@@ -241,7 +229,6 @@ AppModel.prototype.updateContent = function(place){
 };
 
 ko.applyBindings(new AppModel());
-
 }
 
 var googleError = function(){
