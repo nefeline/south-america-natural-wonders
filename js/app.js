@@ -74,13 +74,13 @@ var AppModel = function() {
 		// Set current location to which user clicked.
 		self.currentPlace(clickedPlace);
 		// Find index of the clicked location and store for use in activation of marker.
-		var index = self.filteredItems().indexOf(clickedPlace);
+		var index = self.placeList().indexOf(clickedPlace);
 		// Prepare content for Google Maps infowindow
 		self.updateContent(clickedPlace);
 		// Invoke function for instagram API call.
 		self.instagram(clickedPlace);
 		// Activate the selected marker to change icon.
-		self.activateMarker(self.markers[index], self, self.infowindow)();
+		self.activateMarker(self.placeList()[index].marker, self, self.infowindow)();
 	};
 
 	// Initialize Google Maps
@@ -91,27 +91,21 @@ var AppModel = function() {
 			streetViewControl: false
         });
 
-  	// Initialize markers
-	this.markers = [];
-
 	// Initialize infowindow
 	this.infowindow = new google.maps.InfoWindow({
 		maxWidth: 200,
 	});
 
 	// Render all markers with data from the data model.
-	this.renderMarkers(self.placeList());
+	this.renderMarkers(self);
 
-	// Subscribe to changed in search field.
-  // 	this.filteredItems.subscribe(function(){
-		// self.renderMarkers(self.filteredItems());
-  // 	});
-
-  	// Add event listener for map click event (when user click on other areas of the map beside of markers)
+  	// Add event listener for map click event (when user clicks on other areas of the map beside of markers)
 	google.maps.event.addListener(self.map, 'click', function(event) {
-		// Every click change all markers icon back to defaults.
-		self.deactivateAllMarkers();
-		// Every click close all indowindows.
+		
+		// Deactivate all markers
+		self.deactivateMarkers();
+
+		// Every click close all indowindows
 	    self.infowindow.close();
 	});	
 
@@ -120,15 +114,20 @@ var AppModel = function() {
 
         var filter = self.FilterTxt().toLowerCase();
         if (!filter) {
-            return ko.utils.arrayFilter(self.placeList(), function(item) {
-                item.visible(true);
-                item.marker && item.marker.setVisible(true);
-                return true;
-            });
+        	ko.utils.arrayFilter(self.placeList(), function(item) {
+        		item.visible(true);
+                item.marker.setVisible(true);	
+        	});
+            return self.placeList();
         } else {
+        	self.infowindow.close();
             return ko.utils.arrayFilter(self.placeList(), function(item) {
+   
+                self.deactivateMarkers();
+
                 // return true if found the typed keyword, false if not found.
                 if (item.name.toLowerCase().indexOf(filter) >= 0) {
+                    item.visible(true);
                     item.marker.setVisible(true);
                     return true;
                 } else {
@@ -143,14 +142,14 @@ var AppModel = function() {
 
 // Render all markers
 AppModel.prototype.renderMarkers = function(arrayInput) {
-	// Clear old markers before render
-	this.clearMarkers();
+
 	var infowindow = this.infowindow;
 	var context = this;
-	var placeToShow = arrayInput;
+	var placeToShow = arrayInput.placeList();
 
 	// Create new marker for each place in array and push to markers array
   	for (var i = 0, len = placeToShow.length; i < len; i ++) {
+
 		var location = {lat: placeToShow[i].lat, lng: placeToShow[i].lng};
 		var marker = new google.maps.Marker({
 				position: location,
@@ -158,21 +157,21 @@ AppModel.prototype.renderMarkers = function(arrayInput) {
 				animation: google.maps.Animation.DROP,
 				icon: 'img/map-pin.png'
 		});
-
-		this.markers.push(marker);
-		this.markers[i].setMap(this.map);
+		
+		this.placeList()[i].marker = marker;
+		marker.setMap(this.map);
 		// add event listener for click event to the newly created marker
 		marker.addListener('click', this.activateMarker(marker, context, infowindow, i));
 	}
-
 };
 
-// Clear all markers
-AppModel.prototype.clearMarkers = function() {
-	for (var i = 0; i < this.markers.length; i++) {
-		this.markers[i].setMap(null);
+// Set all marker icons to default.
+AppModel.prototype.deactivateMarkers = function() {
+	var places = this.placeList();
+	
+	for (var i = 0; i < places.length; i ++) {
+		places[i].marker.setIcon('img/map-pin.png');
 	}
-		this.markers = [];
 };
 
 // Set the target marker to change icon and open infowindow
@@ -185,22 +184,15 @@ AppModel.prototype.activateMarker = function(marker, context, infowindow, index)
 			context.updateContent(place);
 			context.instagram(place);
 		}
-		// closed opened infowindow
+		// close opened infowindow
 		infowindow.close();
 		// deactivate all markers
-		context.deactivateAllMarkers();
+		context.deactivateMarkers();
+
 		// Open targeted infowindow and change its icon.
 		infowindow.open(context.map, marker);
 		marker.setIcon('img/map-pin-select.png');
 	};
-};
-
-// Set all marker icons to default.
-AppModel.prototype.deactivateAllMarkers = function() {
-	var markers = this.markers;
-	for (var i = 0; i < markers.length; i ++) {
-		markers[i].setIcon('img/map-pin.png');
-	}
 };
 
 // Connects to Instagram API
