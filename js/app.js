@@ -58,12 +58,11 @@ var Place = function(data) {
 var AppModel = function() {
 	var self = this;
 	this.visible = ko.observable(true);
+	// Get the value from search field.
 	self.FilterTxt = ko.observable('');
 	// Set location list observable array from Database
 	self.placeList = ko.observableArray([]);
-	// Get the value from search field.
-	//self.search = ko.observable('');
-	// Make place object from each item in location list then push to observable array.
+	// Make place object for each item in location list then push to observable array.
 	Database.forEach(function(item){
 		this.placeList.push(new Place(item));
 	}, this);
@@ -110,18 +109,16 @@ var AppModel = function() {
 
   	// Add event listener for map click event (when user click on other areas of the map beside of markers)
 	google.maps.event.addListener(self.map, 'click', function(event) {
-
 		// Every click change all markers icon back to defaults.
 		self.deactivateAllMarkers();
-
 		// Every click close all indowindows.
 	    self.infowindow.close();
 	});	
 
-		// Filter location name with value from search field.
+	// Filter location name with value from search field.
     self.filteredItems = ko.computed(function() {
 
-        const filter = self.FilterTxt().toLowerCase();
+        var filter = self.FilterTxt().toLowerCase();
         if (!filter) {
             return ko.utils.arrayFilter(self.placeList(), function(item) {
                 item.visible(true);
