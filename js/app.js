@@ -52,14 +52,17 @@ var Place = function(data) {
 	this.lng = data.lng;
 	this.imgSrc = data.imgSrc;
 	this.description = data.description;
+	this.visible = ko.observable(true);
 };
 
 var AppModel = function() {
 	var self = this;
+	this.visible = ko.observable(true);
+	self.FilterTxt = ko.observable('');
 	// Set location list observable array from Database
-	this.placeList = ko.observableArray([]);
+	self.placeList = ko.observableArray([]);
 	// Get the value from search field.
-	this.search = ko.observable('');
+	//self.search = ko.observable('');
 	// Make place object from each item in location list then push to observable array.
 	Database.forEach(function(item){
 		this.placeList.push(new Place(item));
@@ -81,19 +84,6 @@ var AppModel = function() {
 		self.activateMarker(self.markers[index], self, self.infowindow)();
 	};
 
-    // Filter location name with value from search field.
-	this.filteredItems = ko.computed(function() {
-	    var searchTerm = self.search().toLowerCase();
-	    if (!searchTerm) {
-	        return self.placeList();
-	    } else {
-	        return ko.utils.arrayFilter(self.placeList(), function(item) {
-	        	// return true if found the typed keyword, false if not found.
-            	return item.name.toLowerCase().indexOf(searchTerm) !== -1;
-	        });
-	    }
-	});
-
 	// Initialize Google Maps
   	this.map = new google.maps.Map(document.getElementById('map'), {
         	center: {lat: -25.613348, lng: -54.479599},
@@ -113,10 +103,10 @@ var AppModel = function() {
 	// Render all markers with data from the data model.
 	this.renderMarkers(self.placeList());
 
-	// Subscribe to changed in search field. Show/hide markers without removing/redraw them.
-  	this.filteredItems.subscribe(function(){
-		self.renderMarkers(self.filteredItems());
-  	});
+	// Subscribe to changed in search field.
+  // 	this.filteredItems.subscribe(function(){
+		// self.renderMarkers(self.filteredItems());
+  // 	});
 
   	// Add event listener for map click event (when user click on other areas of the map beside of markers)
 	google.maps.event.addListener(self.map, 'click', function(event) {
@@ -126,7 +116,32 @@ var AppModel = function() {
 
 		// Every click close all indowindows.
 	    self.infowindow.close();
-	});
+	});	
+
+		// Filter location name with value from search field.
+    self.filteredItems = ko.computed(function() {
+
+        const filter = self.FilterTxt().toLowerCase();
+        if (!filter) {
+            return ko.utils.arrayFilter(self.placeList(), function(item) {
+                item.visible(true);
+                item.marker && item.marker.setVisible(true);
+                return true;
+            });
+        } else {
+            return ko.utils.arrayFilter(self.placeList(), function(item) {
+                // return true if found the typed keyword, false if not found.
+                if (item.name.toLowerCase().indexOf(filter) >= 0) {
+                    item.marker.setVisible(true);
+                    return true;
+                } else {
+                    item.visible(false);
+                    item.marker.setVisible(false);
+                    return false;
+                }
+            });
+        }
+    });
 };
 
 // Render all markers
@@ -148,13 +163,11 @@ AppModel.prototype.renderMarkers = function(arrayInput) {
 		});
 
 		this.markers.push(marker);
-
 		this.markers[i].setMap(this.map);
-
 		// add event listener for click event to the newly created marker
 		marker.addListener('click', this.activateMarker(marker, context, infowindow, i));
-
 	}
+
 };
 
 // Clear all markers
@@ -169,7 +182,6 @@ AppModel.prototype.clearMarkers = function() {
 // Call from user click on the menu list or click on the marker
 AppModel.prototype.activateMarker = function(marker, context, infowindow, index) {
 	return function() {
-
 		// check if have an index. If have an index mean request come from click on the marker event
 		if (!isNaN(index)) {
 			var place = context.filteredItems()[index];
@@ -178,10 +190,8 @@ AppModel.prototype.activateMarker = function(marker, context, infowindow, index)
 		}
 		// closed opened infowindow
 		infowindow.close();
-
 		// deactivate all markers
 		context.deactivateAllMarkers();
-
 		// Open targeted infowindow and change its icon.
 		infowindow.open(context.map, marker);
 		marker.setIcon('img/map-pin-select.png');
@@ -224,7 +234,6 @@ AppModel.prototype.updateContent = function(place, photoURL){
 		'<div class="instagram">'+ photoURL +'</div>' +
 		'<div class="by"><a href="https://www.instagram.com/patriciahill" target="_blank">Instagram - By Patricia Hillebrandt</a></div>' +
 		'<p>' + place.description + '</p>' + '</div>';
-
 	this.infowindow.setContent(html);
 };
 

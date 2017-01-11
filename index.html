@@ -17,15 +17,15 @@
                     <header class="">
                     <h1>South America Natural Wonders</h1>
                     <form>
-                        <input type="text" id="searchbar" name="searchbar" class="form-control" data-bind="value: search, valueUpdate: 'afterkeydown'" placeholder="Search">
+                        <input type="text" id="searchbar" name="searchbar" class="form-control" data-bind="textInput: FilterTxt" placeholder="Search">
                     </form>
                     </header>
                 </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                    <ul data-bind="foreach: filteredItems" class="main-nav">
-                    <li data-bind="text: $data.name, click: $parent.setPlace" class="main-nav-item col-md-12 col-sm-6">Link</li>
+                    <ul data-bind="foreach: filteredItems, visible: filteredItems().length > 0" class="main-nav">
+                    <li data-bind="text: $data.name, visible:visible, click: $parent.setPlace" class="main-nav-item col-md-12 col-sm-6">Link</li>
                     </ul>
                     </div>
                 </div>
