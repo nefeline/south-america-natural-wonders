@@ -4,12 +4,12 @@ body {
 }
 
 h1 {
-	font-size: 2vw;
+	font-size: 25px;
 	text-align: center;
 }
 
 h3 {
-	font-size: 1.2vw;
+	font-size: 20px;
 }
 
 #map {
@@ -36,12 +36,12 @@ h3 {
 }
 
 .info-content p {
-	margin-top: 1.5em;
+	margin-top: 0.5em;
 	font-size: 1em;
 }
 
 .instagram img {
-	max-width: 100%;
+	max-width: 55%;
 }
 
 .main-nav {
@@ -61,6 +61,11 @@ h3 {
 .main-nav-item:hover {
 	background: #00c98a;
 	cursor: pointer;
+}
+
+.row {
+margin-right: -5px;
+margin-left: -5px;
 }
 
 .section-content {
@@ -84,6 +89,8 @@ h3 {
 
 	#searchbar {
 		margin-top: 5%;
+		padding-right: 5%;
+		padding-left: 5%;
 	}
 
 	.main-nav-item {
@@ -100,5 +107,15 @@ h3 {
 @media only screen and (max-width: 780px) {
 	.main-nav-item {
 		width: 100%;
+	}
+
+	.col-md-3 {
+		padding-right: 0px;
+		padding-left: 0px;
+	}
+
+	.row {
+    margin-right: -5px;
+    margin-left: -5px;
 	}
 }
