@@ -233,10 +233,6 @@ AppModel.prototype.updateContent = function(place, photoURL){
 ko.applyBindings(new AppModel());
 }
 
-
-
-
-
 var googleError = function(){
     window.alert("Unable to load the Map, please try again later.");
 }
